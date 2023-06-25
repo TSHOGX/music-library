@@ -17,7 +17,7 @@ function App() {
               index
               element={<MusicianRoot names={data.map((item) => item.name)} />}
             />
-            <Route path=":name" element={<MusicianPage data={data} />} />
+            <Route path=":id" element={<MusicianPage />} />
           </Route>
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />

@@ -1,8 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const MusicianRoot = ({ names }) => {
+const MusicianRoot = () => {
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const [dataPop, setDataPop] = useState(null);
+
+  useEffect(() => {
+    async function fetchDataAsync(setDataPop, endpoint) {
+      try {
+        await fetch("https://api.openopus.org/composer/list" + endpoint)
+          .then((response) => response.json())
+          .then((d) => setDataPop(d.composers));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchDataAsync(setDataPop, "/pop.json");
+  }, []);
+
+  if (dataPop === null) {
+    return (
+      <div className="flex justify-center items-center h-screen text-6xl font-bold">
+        Fetching data...
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -11,7 +33,7 @@ const MusicianRoot = ({ names }) => {
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
             <span className="text-3xl font-semibold leading-relaxed inline-block mr-4 whitespace-nowrap">
-              Musicians
+              Popular Musicians
             </span>
             <button
               className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
@@ -68,9 +90,9 @@ const MusicianRoot = ({ names }) => {
 
       {/* Musician Cloud */}
       <ul className="container px-12 md:px-40 mx-auto flex flex-row flex-wrap sm:justify-center text-lg font-semibold text-gray-800 divide-x divide-border gap-4 cursor-pointer">
-        {names.map((name, i) => (
+        {dataPop.map((item) => (
           <li className="px-2 hover:text-gray-600">
-            <Link to={"/musicians/" + name}>{name.replace(/_/g, " ")}</Link>
+            <Link to={"/musicians/" + item.id}>{item.name}</Link>
           </li>
         ))}
       </ul>

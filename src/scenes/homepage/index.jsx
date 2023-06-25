@@ -9,7 +9,7 @@ const Homepage = () => {
   const [searchQuery, setSearchQuery] = useState(null);
   const [searchQueryPeriod, setSearchQueryPeriod] = useState(null);
 
-  const [dataPop, setDataPop] = useState(null);
+  // const [dataPop, setDataPop] = useState(null);
   const [dataMedieval, setDataMedieval] = useState(null);
   const [dataRenaissance, setDataRenaissance] = useState(null);
   const [dataBaroque, setDataBaroque] = useState(null);
@@ -35,7 +35,7 @@ const Homepage = () => {
   ];
 
   useEffect(() => {
-    fetchDataAsync(setDataPop, "/pop.json");
+    // fetchDataAsync(setDataPop, "/pop.json");
     fetchDataAsync(setDataMedieval, "/epoch/Medieval.json");
     fetchDataAsync(setDataRenaissance, "/epoch/Renaissance.json");
     fetchDataAsync(setDataBaroque, "/epoch/Baroque.json");
@@ -47,8 +47,6 @@ const Homepage = () => {
     fetchDataAsync(setDataPostWar, "/epoch/Post-War.json");
     fetchDataAsync(setData21Century, "/epoch/21st Century.json");
   }, []);
-
-  // console.log(data);
 
   const handleSelect = (event, value) => {
     setSearchQuery(value);
@@ -92,12 +90,24 @@ const Homepage = () => {
     );
   }
 
+  const allName = dataMedieval
+    .map((item) => item.name)
+    .concat(dataRenaissance.map((item) => item.name))
+    .concat(dataBaroque.map((item) => item.name))
+    .concat(dataClassical.map((item) => item.name))
+    .concat(dataEarlyRomantic.map((item) => item.name))
+    .concat(dataRomantic.map((item) => item.name))
+    .concat(dataLateRomantic.map((item) => item.name))
+    .concat(data20Century.map((item) => item.name))
+    .concat(dataPostWar.map((item) => item.name))
+    .concat(data21Century.map((item) => item.name));
+
   return (
     <div>
       {/* Header */}
-      <div className="sticky z-20 top-0 flex flex-col px-20 py-8 md:pt-20 md:pb-10 bg-white">
-        <h1 className="mb-5 md:mb-16 font-extrabold leading-none tracking-tight text-gray-900 text-4xl md:text-5xl lg:text-6xl">
-          This is
+      <div className="sticky z-20 top-0 flex flex-col px-10 py-6 md:pt-20 md:pb-6 bg-white">
+        <h1 className="mb-8 md:mb-8 font-extrabold leading-none tracking-tight text-gray-900 text-4xl md:text-5xl lg:text-6xl">
+          This is a
           <Link to={"/about"}>
             {" "}
             <span className="underline underline-offset-3 decoration-8 decoration-blue-400 cursor-pointer">
@@ -120,7 +130,7 @@ const Homepage = () => {
           <Autocomplete
             disablePortal
             id="search-by-name"
-            options={dataPop.map((item) => item.name)}
+            options={allName}
             className="w-full md:w-80"
             renderInput={(params) => (
               <TextField {...params} label="Search by name" />
@@ -131,8 +141,8 @@ const Homepage = () => {
       </div>
 
       {/* Cards */}
-      <div className="container px-4 mx-auto flex flex-wrap justify-center gap-2">
-        <div
+      <div className="container max-w-[90%] mx-auto flex flex-wrap justify-center gap-2">
+        {/* <div
           className="w-full font-bold text-2xl py-5 flex justify-center"
           ref={searchQueryPeriod === "Pop" ? scrollRef : null}
         >
@@ -146,10 +156,10 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
-        ))}
+        ))} */}
 
         <div
           className="w-full font-bold text-2xl py-5 flex justify-center"
@@ -165,7 +175,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -184,7 +194,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -203,7 +213,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -222,7 +232,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -241,7 +251,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -260,7 +270,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -279,7 +289,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -298,7 +308,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -317,7 +327,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -336,7 +346,7 @@ const Homepage = () => {
               born={item.birth ? item.birth.split("-")[0] : null}
               dead={item.death ? item.death.split("-")[0] : null}
               // wikipedia={item.wikipedia}
-              index={item.id}
+              id={item.id}
             />
           </div>
         ))}
@@ -347,11 +357,11 @@ const Homepage = () => {
 
 export default Homepage;
 
-async function fetchDataAsync(setDataPop, endpoint) {
+async function fetchDataAsync(setData, endpoint) {
   try {
     await fetch("https://api.openopus.org/composer/list" + endpoint)
       .then((response) => response.json())
-      .then((d) => setDataPop(d.composers));
+      .then((d) => setData(d.composers));
   } catch (error) {
     console.error("Error fetching data:", error);
   }

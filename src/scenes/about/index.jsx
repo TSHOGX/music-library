@@ -18,7 +18,7 @@ const About = () => {
               onClick={() => setNavbarOpen(!navbarOpen)}
             >
               <svg
-                class="h-6 w-6"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
@@ -67,28 +67,24 @@ const About = () => {
       </nav>
 
       {/* Body */}
-      <div className="container px-12 mx-auto">
+      <div className="container max-w-[90%] px-12 mx-auto">
         <p className="mb-4 font-medium text-gray-700">
-          It is my personal classical music collection.
+          It is a classical music collection.
         </p>
         <p className="mb-4 font-medium text-gray-700">
           <span className="underline underline-offset-4 decoration-2 decoration-blue-400">
             <Link to="/">Homepage</Link>
           </span>{" "}
-          listed all the musicians I interested.
+          listed all the musicians collected.
         </p>
         <p className="mb-4 font-medium text-gray-700">
           Click musician name to view the{" "}
           <span className="underline underline-offset-4 decoration-2 decoration-blue-400">
             <Link to="/musicians">musician</Link>
           </span>{" "}
-          page, which listed events and opus in timeline style.
+          page, which listed all opus.
         </p>
-        <h2 className="mb-4 font-medium text-gray-700">
-          Naming conventions: Name no. # in K major, op. # no.#, C.#, CC.#,
-          “Nickname”
-        </h2>
-        <ul className="mb-4 font-medium text-gray-700">
+        {/* <ul className="mb-4 font-medium text-gray-700">
           <li>
             Musician's events are summarized by ChatGPT according to the
             wikipedia, so:
@@ -100,7 +96,7 @@ const About = () => {
               <li>The included music is not comprehensive.</li>
             </ul>
           </li>
-        </ul>
+        </ul> */}
         <h2 className="mt-8 mb-4 text-xl font-bold">Naming Conventions</h2>
         <p className="mb-4 font-medium text-gray-700">
           Music title following format defined by{" "}

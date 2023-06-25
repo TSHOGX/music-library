@@ -1,26 +1,58 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import HeadphonesIcon from "@mui/icons-material/Headphones";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import PianoIcon from "@mui/icons-material/Piano";
+import HouseIcon from "@mui/icons-material/House";
 
-const MusicianPage = ({ data }) => {
-  const { name } = useParams();
+const MusicianPage = () => {
+  const { id } = useParams();
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const [works, setWorks] = useState(null);
+  const [name, setName] = useState(null);
 
-  const item = data.filter((item) => item.name === name);
-  const timestamps = item[0].timestamps;
-  const wikipedia = item[0].wikipedia;
+  // const item = data.filter((item) => item.name === name);
+  // const timestamps = item[0].timestamps;
+  // const wikipedia = item[0].wikipedia;
 
-  const sortedTimestamps = timestamps.sort(
-    (a, b) => parseInt(a.year) - parseInt(b.year)
-  );
+  // const sortedTimestamps = timestamps.sort(
+  //   (a, b) => parseInt(a.year) - parseInt(b.year)
+  // );
 
-  const [isClicked, setIsClicked] = useState(null);
-  const handleClick = (name) => {
-    console.log(name);
-    setIsClicked(name);
-  };
+  // const [isClicked, setIsClicked] = useState(null);
+  // const handleClick = (name) => {
+  //   console.log(name);
+  //   setIsClicked(name);
+  // };
+
+  // {title, subtitle, searchterms, popular, recommended, id, genre}
+  useEffect(() => {
+    async function fetchData(id) {
+      try {
+        await fetch(
+          "https://api.openopus.org/work/list/composer/" +
+            id +
+            "/genre/all.json"
+        )
+          .then((response) => response.json())
+          .then((d) => {
+            setWorks(d.works);
+            setName(d.composer.name);
+          });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData(id);
+  }, []);
+
+  if (works === null || name === null) {
+    return (
+      <div className="flex justify-center items-center h-screen text-6xl font-bold">
+        Fetching data...
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -73,7 +105,7 @@ const MusicianPage = ({ data }) => {
               </li>
               <li>
                 <Link
-                  to={wikipedia}
+                  to={"wikipedia"}
                   className="px-2 flex items-center font-medium hover:text-gray-600"
                 >
                   Wiki
@@ -101,18 +133,11 @@ const MusicianPage = ({ data }) => {
       </nav>
 
       {/* Body */}
-      <div className="container px-12 mx-auto flex flex-row">
+      <div className="container max-w-[90%] px-12 mx-auto flex flex-row">
         {/* timeline */}
         <div className="col-span-1">
           <ol className="relative border-l border-gray-200">
-            {sortedTimestamps.map((timestamp) => {
-              return getListItem(
-                timestamp,
-                isClicked,
-                setIsClicked,
-                handleClick
-              );
-            })}
+            {works.map((work) => getListItem(work))}
           </ol>
         </div>
       </div>
@@ -120,65 +145,68 @@ const MusicianPage = ({ data }) => {
   );
 };
 
-function getListItem(timestamp, isClicked, handleClick) {
-  if (timestamp.type === "event") {
+function getListItem(work) {
+  if (work.genre === "Vocal") {
     return (
       <li className="mb-6 ml-6">
-        <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white">
-          <CalendarMonthIcon
-            className="w-4 h-4 text-blue-800"
-            fill="currentColor"
-          />
+        <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full -left-4 ring-8 ring-white">
+          <MusicNoteIcon className="text-blue-800" fill="currentColor" />
         </span>
-        <h3 className="mb-1 text-lg font-semibold text-gray-900">
-          {timestamp.year}
+        <h3 className="mb-1 ml-2 text-lg font-semibold text-gray-900">
+          {work.title}
         </h3>
-        <p className="text-sm font-normal text-gray-400">{timestamp.detail}</p>
+        <p className="ml-2 text-sm font-normal text-gray-400">{work.genre}</p>
       </li>
     );
-  } else if (timestamp.type === "opus") {
+  } else if (work.genre === "Keyboard") {
     return (
       <li className="mb-6 ml-6">
-        <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white">
-          <HeadphonesIcon
-            className="w-4 h-4 text-blue-800"
-            fill="currentColor"
-          />
+        <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full -left-4 ring-8 ring-white">
+          <PianoIcon className="text-blue-800" fill="currentColor" />
         </span>
-        <h3 className="flex items-center sm-1 text-lg font-semibold text-gray-900">
-          {timestamp.year} - {timestamp.name.toUpperCase()}
+        <h3 className="mb-1 ml-2 text-lg font-semibold text-gray-900">
+          {work.title}
         </h3>
-        {isClicked === timestamp.name.toUpperCase() ? (
-          <span
-            onClick={() => handleClick(null)}
-            className="cursor-pointer underline underline-offset-2 decoration-3 decoration-gray-600 text-sm font-medium text-gray-400 ml-1"
-          >
-            COLLAPSE
-          </span>
-        ) : (
-          <span
-            onClick={() => handleClick(timestamp.name.toUpperCase())}
-            className="cursor-pointer underline underline-offset-2 decoration-3 decoration-gray-600 text-sm font-medium text-gray-400 ml-1"
-          >
-            PLAY NOW
-          </span>
-        )}
-        {isClicked === timestamp.name.toUpperCase() && (
-          <iframe
-            width="560"
-            height="315"
-            src={timestamp.link}
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
-        )}
+        <p className="ml-2 text-sm font-normal text-gray-400">{work.genre}</p>
+      </li>
+    );
+  } else if (work.genre === "Chamber") {
+    return (
+      <li className="mb-6 ml-6">
+        <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full -left-4 ring-8 ring-white">
+          <HouseIcon className="text-blue-800" fill="currentColor" />
+        </span>
+        <h3 className="mb-1 ml-2 text-lg font-semibold text-gray-900">
+          {work.title}
+        </h3>
+        <p className="ml-2 text-sm font-normal text-gray-400">{work.genre}</p>
       </li>
     );
   } else {
-    return null;
+    return (
+      <li className="mb-6 ml-6">
+        <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full -left-4 ring-8 ring-white">
+          <MusicNoteIcon className="text-blue-800" fill="currentColor" />
+        </span>
+        <h3 className="mb-1 ml-2 text-lg font-semibold text-gray-900">
+          {work.title}
+        </h3>
+        <p className="ml-2 text-sm font-normal text-gray-400">{work.genre}</p>
+      </li>
+    );
   }
 }
 
 export default MusicianPage;
+
+async function fetchDataAsync(setData, id) {
+  try {
+    await fetch(
+      "https://api.openopus.org/work/list/composer/" + id + "/genre/all.json"
+    )
+      .then((response) => response.json())
+      .then((d) => setData(d));
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
